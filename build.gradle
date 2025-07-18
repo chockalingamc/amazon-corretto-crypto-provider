@@ -485,7 +485,11 @@ task unit_tests(type: Copy) {
     from "${buildDir}/cmake/unit-tests/"
     into "${buildDir}/reports/unit-tests"
 }
-test.dependsOn unit_tests
+
+test {
+    dependsOn executeCmake
+    useJUnitPlatform()
+}
 
 task singleTest(type: Exec) {
     group = 'Verification'
@@ -628,11 +632,11 @@ task coverage {
 }
 
 task release {
-    dependsOn build, test, coverage, javadoc, src_jar
+    dependsOn build, unit_tests, coverage, javadoc, src_jar
 }
 
 task overkill {
-    dependsOn test, test_extra_checks, test_integration, test_integration_extra_checks
+    dependsOn unit_tests, test_extra_checks, test_integration, test_integration_extra_checks
 }
 
 task fakePublish {
